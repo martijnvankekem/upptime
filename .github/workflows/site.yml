@@ -38,24 +38,16 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GH_PAT || github.token }}
-      - name: Get token
-        id: token
-        uses: ./.github/workflows/get-token
-        with:
-          app-client-id: ${{ vars.GH_APP_ID }}
-          app-private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          pat: ${{ secrets.GH_PAT }}
-          default: ${{ github.token }}
       - name: Generate site
         uses: upptime/uptime-monitor@v1.43.14
         with:
           command: "site"
         env:
-          GH_PAT: ${{ steps.token.outputs.token }}
+          GH_PAT: ${{ secrets.GH_PAT || github.token }}
       - uses: peaceiris/actions-gh-pages@v4
         name: GitHub Pages Deploy
         with:
-          github_token: ${{ steps.token.outputs.token }}
+          github_token: ${{ secrets.GH_PAT || github.token }}
           publish_dir: "site/status-page/__sapper__/export/"
           force_orphan: "false"
           user_name: "Upptime Bot"

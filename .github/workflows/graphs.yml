@@ -34,14 +34,6 @@ jobs:
         with:
           ref: ${{ github.head_ref || github.ref_name }}
           token: ${{ secrets.GH_PAT || github.token }}
-      - name: Get token
-        id: token
-        uses: ./.github/workflows/get-token
-        with:
-          app-client-id: ${{ vars.GH_APP_ID }}
-          app-private-key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-          pat: ${{ secrets.GH_PAT }}
-          default: ${{ github.token }}
       - name: Setup Node.js for graphs
         uses: actions/setup-node@v6
         with:
@@ -51,4 +43,4 @@ jobs:
         with:
           command: "graphs"
         env:
-          GH_PAT: ${{ steps.token.outputs.token }}
+          GH_PAT: ${{ secrets.GH_PAT || github.token }}
